@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Christmas Tree</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+        }
+        canvas {
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="christmasCanvas" width="800" height="600"></canvas>
+    <script>
+        const canvas = document.getElementById('christmasCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function drawLight() {
+            const rand = Math.floor(Math.random() * 30);
+            if (rand === 0) {
+                ctx.fillStyle = 'tomato';
+                ctx.beginPath();
+                ctx.arc(0, 0, 6, 0, 2 * Math.PI);
+                ctx.fill();
+            } else if (rand === 1) {
+                ctx.fillStyle = 'orange';
+                ctx.beginPath();
+                ctx.arc(0, 0, 3, 0, 2 * Math.PI);
+                ctx.fill();
+            } else {
+                ctx.fillStyle = 'darkgreen';
+            }
+        }
+
+        function drawTree(d, s) {
+            if (d <= 0) return;
+            ctx.strokeStyle = 'darkgreen';
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, -s);
+            ctx.stroke();
+
+            ctx.translate(0, -s);
+            drawTree(d - 1, s * 0.8);
+            ctx.rotate((2 * Math.PI) / 3);
+            drawTree(d - 3, s * 0.5);
+            drawLight();
+            ctx.rotate((2 * Math.PI) / 3);
+            drawTree(d - 3, s * 0.5);
+            ctx.rotate((2 * Math.PI) / 3);
+            ctx.translate(0, s);
+        }
+
+        function drawSnow() {
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 200; i++) {
+                ctx.beginPath();
+                const x = Math.random() * 700 - 350;
+                const y = Math.random() * 450 - 100;
+                ctx.moveTo(x, y);
+                const dens = 6;
+                const snowSize = Math.floor(Math.random() * 10) + 1;
+                for (let j = 0; j < dens; j++) {
+                    ctx.lineTo(x, y + snowSize);
+                    ctx.lineTo(x, y);
+                    ctx.rotate((2 * Math.PI) / dens);
+                }
+                ctx.stroke();
+            }
+        }
+
+        function drawChristmasTree() {
+            ctx.fillStyle = 'darkgreen';
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height);
+            drawTree(15, 100);
+            ctx.restore();
+
+            ctx.save();
+            ctx.translate(canvas.width / 2, canvas.height);
+            for (let i = 0; i < 200; i++) {
+                const a = 200 - 400 * Math.random();
+                const b = 10 - 20 * Math.random();
+                ctx.save();
+                ctx.translate(b, -a);
+                ctx.beginPath();
+                ctx.fillStyle = Math.random() < 0.5 ? 'tomato' : 'wheat';
+                ctx.arc(0, 0, 2, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.restore();
+            }
+            ctx.restore();
+        }
+
+        function drawText() {
+            ctx.font = '40px Comic Sans MS';
+            ctx.fillStyle = 'red';
+            ctx.textAlign = 'center';
+            ctx.fillText('Merry Christmas', canvas.width / 2, canvas.height - 50);
+        }
+
+        drawChristmasTree();
+        drawText();
+        drawSnow();
+    </script>
+</body>
+</html>
